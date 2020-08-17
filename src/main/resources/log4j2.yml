@@ -1,0 +1,12 @@
+Configuration:
+  Appenders:
+    File:
+      name: File
+      fileName: literal-mutator.log
+      PatternLayout:
+        Pattern: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+  Loggers:
+    Root:
+      level: all
+      AppenderRef:
+        ref: File

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "edu.purdue.dsnl.configprof.rpc";
+option java_outer_classname = "BuildMsg";
+
+service Builder {
+    rpc Build (Mutations) returns (Status) {}
+}
+
+message Mutations {
+    message Mutation {
+        string path = 1;
+        string value = 2;
+    }
+
+    string tag = 1;
+    repeated Mutation mutations = 2;
+}
+
+message Status {
+    string build_path = 1;
+}
