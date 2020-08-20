@@ -162,7 +162,7 @@ public class AndroidAdaptor implements AppAdaptor {
 		}
 		var stats = new SummaryStatistics();
 		results.stream().mapToDouble(r -> r.values().stream().mapToDouble(Number::doubleValue).sum())
-				.skip(1).forEach(stats::addValue);
+				.forEach(stats::addValue);
 		log.debug("results = {}, mean = {}, stdev = {}, threshold = {}",
 				results, stats.getMean(), stats.getStandardDeviation(), conf.stableThreshold);
 		return stats.getStandardDeviation() <= conf.stableThreshold * stats.getMean();
