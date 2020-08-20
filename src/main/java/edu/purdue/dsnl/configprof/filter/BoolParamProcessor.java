@@ -44,6 +44,11 @@ class BoolParamProcessor extends AbstractParamProcessor<CtLiteral<?>> {
 	}
 
 	@Override
+	public void process(CtLiteral<?> element) {
+		super.process(element);
+	}
+
+	@Override
 	protected boolean isCompatVarType(CtVariable<?> variable) {
 		return isBool(variable);
 	}
