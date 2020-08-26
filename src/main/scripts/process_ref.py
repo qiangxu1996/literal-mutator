@@ -33,7 +33,8 @@ def energy_time(results, errs):
 
 def sd_cdf(results, errs):
     percent = [e / r for r, e in zip(results, errs)]
-    print(statistics.mean(percent), statistics.stdev(percent))
+    print('norm stdev:', 'mean:', statistics.mean(percent),
+        'stdev:', statistics.stdev(percent))
     percent.sort()
     n = len(percent)
     cdf = [i / n for i in range(1, n + 1)]
@@ -80,7 +81,7 @@ def adjacent_plot(result_grps, sig_indices):
 if __name__ == '__main__':
     result_grps, results, errs = extract_res(sys.argv[1])
 
-    print(min(results), max(results))
+    print('min:', min(results), 'max:', max(results))
 
     plt.figure()
     energy_time(results, errs)
@@ -94,7 +95,7 @@ if __name__ == '__main__':
     abs_diff = [2 * (results[i] - results[i-1]) / (results[i] + results[i-1])
         for i in sig_indices]
     for i, d in zip(sig_indices, abs_diff):
-        print(i, d)
+        print('idx:', i, 'diff:', d)
 
     plt.figure()
     adjacent_plot(result_grps, sig_indices)
