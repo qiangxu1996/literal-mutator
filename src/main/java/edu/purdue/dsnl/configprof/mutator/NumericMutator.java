@@ -73,12 +73,17 @@ class NumericMutator extends AbstractMutator {
 				}
 			} else if (original instanceof Double || original instanceof Float) {
 				double val = original.doubleValue();
-				if (val > 0 && val < 1) {
-					candidateList.add(1 - (1 - val) / 8);
+				if (val == 0) {
+					candidateList.add(0.5);
+					candidateList.add(1.0);
 				} else {
-					candidateList.add(val * 8);
+					if (val > 0 && val < 1) {
+						candidateList.add(1 - (1 - val) / 8);
+					} else {
+						candidateList.add(val * 8);
+					}
+					candidateList.add(val / 8);
 				}
-				candidateList.add(val / 8);
 			}
 
 			return candidateList;
