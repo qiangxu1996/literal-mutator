@@ -114,10 +114,12 @@ if __name__ == '__main__':
 
     param_indices, ref_result_list, mut_result_list, mut_percents, mut_errs \
         = extract_res(ref_data, mut_data, STABLE_THRESHOLD)
+
     print()
+
     sig_indices = sig_params(mut_data, param_indices,
         ref_result_list, mut_result_list, mut_percents)
-
-    plt.figure()
-    sig_plot(param_indices, ref_result_list, mut_result_list, sig_indices)
-    plt.savefig('ref-mut-sig.pdf')
+    if len(sig_indices) > 0:
+        plt.figure()
+        sig_plot(param_indices, ref_result_list, mut_result_list, sig_indices)
+        plt.savefig('ref-mut-sig.pdf')
