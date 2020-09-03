@@ -68,6 +68,23 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
     return param_indices, mut_vals, ref_grps, mut_grps
 
 
+def ref_mut_plot(ref_result_list, mut_result_list):
+    x = range(len(ref_result_list))
+    ref_results = [statistics.mean(r) for r in ref_result_list]
+    mut_results = [statistics.mean(r) for r in mut_result_list]
+    ref_errs = [statistics.stdev(r) for r in ref_result_list]
+    mut_errs = [statistics.stdev(r) for r in mut_result_list]
+
+    style = {'linestyle': '', 'marker': 'o', 'markersize': 3,
+        'elinewidth': 1, 'capsize': 1.5}
+    plt.errorbar(x, ref_results, ref_errs, label='Unmodified', **style)
+    plt.errorbar(x, mut_results, mut_errs, label='Modified', **style)
+    plt.xticks([])
+    plt.xlabel('Parameters')
+    plt.ylabel('Energy (µAh)')
+    plt.legend()
+
+
 def sig_params(mut_data, param_indices,
     mut_value_list, ref_result_list, mut_result_list):
     sig_indices = []
@@ -117,6 +134,10 @@ if __name__ == '__main__':
 
     param_indices, mut_value_list, ref_result_list, mut_result_list \
         = extract_res(ref_data, mut_data, STABLE_THRESHOLD)
+
+    plt.figure()
+    ref_mut_plot(ref_result_list, mut_result_list)
+    plt.savefig('ref-mut.pdf')
 
     print()
 
