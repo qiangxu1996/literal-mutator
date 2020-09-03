@@ -34,6 +34,7 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
     mut_errs = []
 
     for i, mut_meta in enumerate(mut_data):
+        path = mut_meta['paths'][0]
         while mileage < i:
             ref_idx += 1
             mileage = ref_data[ref_idx]['mileage']
@@ -41,7 +42,7 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
         ref_grp = [sum(r.values()) for r in ref_meta['results']]
         ref = statistics.mean(ref_grp)
         if statistics.stdev(ref_grp) / ref > stable_thresh:
-            print(mut_meta['paths'][0])
+            print(path)
             continue
         
         lowest = math.inf
@@ -54,7 +55,7 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
                 mut = statistics.mean(mut_grp)
                 err = statistics.stdev(mut_grp)
                 if err / mut > stable_thresh:
-                    print(mut_meta['paths'][0])
+                    print(path)
                     lowest = math.inf
                     break
                 if mut < lowest:
@@ -67,6 +68,8 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
             mut_grps.append(lowest_grp)
             mut_percents.append(lowest / ref)
             mut_errs.append(lowest_err / ref)
+        else:
+            print('All mutations crash:', path)
 
     return param_indices, ref_grps, mut_vals, mut_grps, mut_percents, mut_errs
 
