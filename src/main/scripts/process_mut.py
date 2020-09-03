@@ -51,7 +51,6 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
                 mut_grp = [sum(r.values()) for r in mut_val_meta['results']]
                 mut = statistics.mean(mut_grp)
                 if statistics.stdev(mut_grp) / mut > stable_thresh:
-                    print(path)
                     lowest = math.inf
                     break
                 if mut < lowest:
@@ -63,7 +62,10 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
             ref_grps.append(ref_grp)
             mut_grps.append(lowest_grp)
         else:
-            print('All mutations crash:', path)
+            # Two possibilities: all mutations crash,
+            # or any exceeds stable threshold.
+            # Only the first will happen if STABLE_THRESHOLD = 1
+            print(path)
 
     return param_indices, mut_vals, ref_grps, mut_grps
 
