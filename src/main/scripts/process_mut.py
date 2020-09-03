@@ -27,11 +27,9 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
     ref = 0
 
     param_indices = []
-    ref_grps = []
     mut_vals = []
+    ref_grps = []
     mut_grps = []
-    mut_percents = []
-    mut_errs = []
 
     for i, mut_meta in enumerate(mut_data):
         path = mut_meta['paths'][0]
@@ -47,41 +45,38 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
         
         lowest = math.inf
         lowest_val = None
-        lowest_err = None
         lowest_grp = None
         for mut_val_meta in mut_meta['mutations']:
             if 'results' in mut_val_meta:
                 mut_grp = [sum(r.values()) for r in mut_val_meta['results']]
                 mut = statistics.mean(mut_grp)
-                err = statistics.stdev(mut_grp)
-                if err / mut > stable_thresh:
+                if statistics.stdev(mut_grp) / mut > stable_thresh:
                     print(path)
                     lowest = math.inf
                     break
                 if mut < lowest:
-                    lowest, lowest_val, lowest_err, lowest_grp \
-                        = mut, mut_val_meta['mutation'][0], err, mut_grp
+                    lowest, lowest_val, lowest_grp \
+                        = mut, mut_val_meta['mutation'][0], mut_grp
         if lowest < math.inf:
             param_indices.append(i)
-            ref_grps.append(ref_grp)
             mut_vals.append(lowest_val)
+            ref_grps.append(ref_grp)
             mut_grps.append(lowest_grp)
-            mut_percents.append(lowest / ref)
-            mut_errs.append(lowest_err / ref)
         else:
             print('All mutations crash:', path)
 
-    return param_indices, ref_grps, mut_vals, mut_grps, mut_percents, mut_errs
+    return param_indices, mut_vals, ref_grps, mut_grps
 
 
 def sig_params(mut_data, param_indices,
-    ref_result_list, mut_value_list, mut_result_list, mut_percents):
+    mut_value_list, ref_result_list, mut_result_list):
     sig_indices = []
     for i in range(len(param_indices)):
         if sig_left_tail(mut_result_list[i], ref_result_list[i]):
             sig_indices.append(i)
             idx = param_indices[i]
-            print(idx, 1 - mut_percents[i],
+            print(idx, 1 - statistics.mean(mut_result_list[i]) \
+                    / statistics.mean(ref_result_list[i]),
                 mut_data[idx]['paths'][0], mut_value_list[i])
     return sig_indices
 
@@ -120,14 +115,13 @@ if __name__ == '__main__':
         ref_data = json.load(ref_file)
         mut_data = json.load(mut_file)
 
-    param_indices, ref_result_list, mut_value_list, \
-        mut_result_list, mut_percents, mut_errs \
+    param_indices, mut_value_list, ref_result_list, mut_result_list \
         = extract_res(ref_data, mut_data, STABLE_THRESHOLD)
 
     print()
 
     sig_indices = sig_params(mut_data, param_indices,
-        ref_result_list, mut_value_list, mut_result_list, mut_percents)
+        mut_value_list, ref_result_list, mut_result_list)
     if len(sig_indices) > 0:
         plt.figure()
         sig_plot(param_indices, ref_result_list, mut_result_list, sig_indices)
