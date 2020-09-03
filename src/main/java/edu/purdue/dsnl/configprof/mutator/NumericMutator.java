@@ -1,19 +1,17 @@
 package edu.purdue.dsnl.configprof.mutator;
 
-import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.math.NumberUtils;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtElement;
 
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 class NumericMutator extends AbstractMutator {
 	private class NumericMutationIterator extends AbstractMutationIterator<Number> {
-		NumberFormat nf = NumberFormat.getInstance();
-
 		NumericMutationIterator(String path) throws InvalidPathException, IOException {
 			super(path);
 		}
@@ -42,13 +40,15 @@ class NumericMutator extends AbstractMutator {
 			} else if (original instanceof Float) {
 				ret += 'f';
 			}
+			log.debug("{}({}): {}({}) -> {}", this.getClass(), original.getClass(), value, value.getClass(), ret);
 			return ret;
 		}
 
-		@SneakyThrows(ParseException.class)
 		@Override
 		protected Number stringToValue(String str) {
-			return nf.parse(str);
+			var ret = NumberUtils.createNumber(str);
+			log.debug("{}: {} -> {}({})", this.getClass(), str, ret, ret.getClass());
+			return ret;
 		}
 
 		@Override
