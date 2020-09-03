@@ -28,6 +28,7 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
 
     param_indices = []
     ref_grps = []
+    mut_vals = []
     mut_grps = []
     mut_percents = []
     mut_errs = []
@@ -44,6 +45,7 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
             continue
         
         lowest = math.inf
+        lowest_val = None
         lowest_err = None
         lowest_grp = None
         for mut_val_meta in mut_meta['mutations']:
@@ -56,25 +58,28 @@ def extract_res(ref_data, mut_data, stable_thresh: float = 1):
                     lowest = math.inf
                     break
                 if mut < lowest:
-                    lowest, lowest_err, lowest_grp = mut, err, mut_grp
+                    lowest, lowest_val, lowest_err, lowest_grp \
+                        = mut, mut_val_meta['mutation'][0], err, mut_grp
         if lowest < math.inf:
             param_indices.append(i)
             ref_grps.append(ref_grp)
+            mut_vals.append(lowest_val)
             mut_grps.append(lowest_grp)
             mut_percents.append(lowest / ref)
             mut_errs.append(lowest_err / ref)
 
-    return param_indices, ref_grps, mut_grps, mut_percents, mut_errs
+    return param_indices, ref_grps, mut_vals, mut_grps, mut_percents, mut_errs
 
 
 def sig_params(mut_data, param_indices,
-    ref_result_list, mut_result_list, mut_percents):
+    ref_result_list, mut_value_list, mut_result_list, mut_percents):
     sig_indices = []
     for i in range(len(param_indices)):
         if sig_left_tail(mut_result_list[i], ref_result_list[i]):
             sig_indices.append(i)
             idx = param_indices[i]
-            print(idx, 1 - mut_percents[i], mut_data[idx]['paths'][0])
+            print(idx, 1 - mut_percents[i],
+                mut_data[idx]['paths'][0], mut_value_list[i])
     return sig_indices
 
 
@@ -112,13 +117,14 @@ if __name__ == '__main__':
         ref_data = json.load(ref_file)
         mut_data = json.load(mut_file)
 
-    param_indices, ref_result_list, mut_result_list, mut_percents, mut_errs \
+    param_indices, ref_result_list, mut_value_list, \
+        mut_result_list, mut_percents, mut_errs \
         = extract_res(ref_data, mut_data, STABLE_THRESHOLD)
 
     print()
 
     sig_indices = sig_params(mut_data, param_indices,
-        ref_result_list, mut_result_list, mut_percents)
+        ref_result_list, mut_value_list, mut_result_list, mut_percents)
     if len(sig_indices) > 0:
         plt.figure()
         sig_plot(param_indices, ref_result_list, mut_result_list, sig_indices)
