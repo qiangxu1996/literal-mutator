@@ -61,6 +61,7 @@ class TestDriver implements Closeable {
 				var builtApp = builder.nextBuiltApp();
 				var idx = builtApp.getPathIdx();
 				var path = builtApp.getPaths();
+				boolean idxChanged = false;
 
 				if (idx != currIdx) {
 					if (record != null) {
@@ -68,16 +69,8 @@ class TestDriver implements Closeable {
 						TestState.saveTestCounter(idx);
 					}
 					record = new MutResult(path);
-					if (!interleave && (idx - initCounter) % REF_RUN_INTERVAL == 0) {
-						try {
-							var results = runPairUntilStable(() -> runRefTest(idx));
-							refResultSerializer.toJson(new RefResult(idx, results.getLeft(), results.getRight()));
-						} catch (AppAdaptor.ExecutionException e) {
-							log.fatal("Ref run failed", e);
-							System.exit(1);
-						}
-					}
 					currIdx = idx;
+					idxChanged = true;
 				}
 
 				assert record != null;
@@ -91,6 +84,16 @@ class TestDriver implements Closeable {
 				if (builtApp.getLog() != null) {
 					record.addResults(mutations, MutResult.Status.ABORT_COMPILE, builtApp.getLog());
 					continue;
+				}
+
+				if (idxChanged && !interleave && (idx - initCounter) % REF_RUN_INTERVAL == 0) {
+					try {
+						var results = runPairUntilStable(() -> runRefTest(idx));
+						refResultSerializer.toJson(new RefResult(idx, results.getLeft(), results.getRight()));
+					} catch (AppAdaptor.ExecutionException e) {
+						log.fatal("Ref run failed", e);
+						System.exit(1);
+					}
 				}
 
 				try {
