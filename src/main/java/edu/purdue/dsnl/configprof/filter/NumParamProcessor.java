@@ -63,11 +63,11 @@ class NumParamProcessor extends AbstractParamProcessor<CtLiteral<?>> {
 
 		for (var el : toBeChecked) {
 			if (isEnabled(FilterLevel.HEURISTIC)
-					&& (isIgnoreMethod(el) || isIgnoreClass(el) || isIgnoreMethodParam(el))) {
+					&& (isForInit(el) || isIgnoreMethod(el) || isIgnoreClass(el) || isIgnoreMethodParam(el))) {
 				return false;
 			}
 			if (isEnabled(FilterLevel.ALL)
-					&& (isIncrement(el) || isArrayIndex(el) || isSwitchCase(el) || isForInit(el) || isSdkCompare(el))) {
+					&& (isIncrement(el) || isArrayIndex(el) || isSwitchCase(el) || isSdkCompare(el))) {
 				return false;
 			}
 		}
