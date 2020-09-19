@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Collectors;
 
 @Log4j2
 class ProjectBuilder implements Runnable {
