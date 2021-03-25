@@ -7,7 +7,6 @@ import spoon.reflect.declaration.CtTypedElement;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,9 +29,7 @@ public class BookmarkSerializer implements LiteralSerializer {
 
 		void addLine(CtTypedElement<?> element) throws IOException {
 			var position = element.getPosition();
-			@Cleanup var lines = Files.lines(position.getFile().toPath());
-			var line = lines.skip(position.getLine() - 1).findFirst().get();
-			var label = line.strip() + "@" + element.getPath().toString();
+			var label = Util.getAnnotatedLine(position) + "@" + element.getPath().toString();
 			bookmarks.add(new BookmarkLine(position.getLine() - 1, position.getColumn() - 1, label));
 		}
 	}
