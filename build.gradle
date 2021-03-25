@@ -16,7 +16,7 @@ application {
 }
 
 ext {
-	lombokVersion = '1.18.12'
+	lombokVersion = '1.18.18'
 	log4jVersion = '2.13.3'
 	grpcVersion = '1.31.1'
 }
