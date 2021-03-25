@@ -25,7 +25,7 @@ public class AbstractParamProcessor<E extends CtTypedElement<?>> extends Abstrac
 
 	private final List<String> literalPaths = new ArrayList<>();
 
-	private final FilterLevel filterLevel = FilterLevel.CATEGORY;
+	private final FilterLevel filterLevel = FilterLevel.HEURISTIC;
 
 	protected enum FilterLevel {
 		NONE,
