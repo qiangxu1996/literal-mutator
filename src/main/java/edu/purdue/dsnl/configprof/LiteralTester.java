@@ -67,7 +67,7 @@ class LiteralTester implements Runnable {
 			@CommandLine.ArgGroup(exclusive = false) CovOptions cov,
 			@Option(names = {"-m", "--bookmark"}) boolean bookmark,
 			@Option(names = {"-c", "--csv"}) Path csv) throws IOException {
-		TestState.initConf(project, sources);
+		TestState.initConf(project, sources, type);
 		TestState.saveTestCounter(0);
 
 		var sourcePaths = catPaths(project, sources);

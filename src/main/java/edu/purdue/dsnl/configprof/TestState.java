@@ -42,7 +42,7 @@ public class TestState {
 	private static class TestConf {
 		String project;
 		List<String> sources;
-		LiteralType literalType = LiteralType.NUM;
+		LiteralType literalType;
 		boolean supplyMutation = false;
 		boolean interleave = false;
 		boolean enableRpc = false;
@@ -63,10 +63,11 @@ public class TestState {
 		conf = getSection(GEN_SEC, TestConf.class);
 	}
 
-	public static void initConf(String project, List<String> sources) throws IOException {
+	public static void initConf(String project, List<String> sources, LiteralType type) throws IOException {
 		conf = new TestConf();
 		conf.project = project;
 		conf.sources = sources;
+		conf.literalType = type;
 		var objRoot = MAPPER.createObjectNode();
 		objRoot.set(GEN_SEC, MAPPER.valueToTree(conf));
 		MAPPER.writeValue(TEST_CONF_FILE, objRoot);
