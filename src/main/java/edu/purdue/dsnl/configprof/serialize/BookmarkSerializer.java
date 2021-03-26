@@ -8,15 +8,16 @@ import spoon.reflect.declaration.CtTypedElement;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BookmarkSerializer implements LiteralSerializer {
 	private final Path projectRoot;
 
 	private final Map<Path, BookmarkFile> bookmarkFiles = new LinkedHashMap<>();
+
+	class BookmarkWrapper {
+		final Collection<BookmarkFile> files = bookmarkFiles.values();
+	}
 
 	private class BookmarkFile {
 		final String path;
@@ -24,7 +25,7 @@ public class BookmarkSerializer implements LiteralSerializer {
 		List<BookmarkLine> bookmarks = new ArrayList<>();
 
 		BookmarkFile(Path path) {
-			this.path = "$ROOTPATH$/" + projectRoot.relativize(path).toString();
+			this.path = projectRoot.relativize(path).toString();
 		}
 
 		void addLine(CtTypedElement<?> element) throws IOException {
@@ -55,6 +56,6 @@ public class BookmarkSerializer implements LiteralSerializer {
 	public void serialize() throws IOException {
 		var gson = new GsonBuilder().setPrettyPrinting().create();
 		@Cleanup var writer = new FileWriter("bookmarks.json");
-		gson.toJson(bookmarkFiles.values(), writer);
+		gson.toJson(new BookmarkWrapper(), writer);
 	}
 }

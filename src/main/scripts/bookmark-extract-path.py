@@ -10,7 +10,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     with open(args.bookmark, encoding='utf-8') as f:
-        bookmarks = json.load(f)
+        bookmarks = json.load(f)['files']
     if args.csv:
         csvfile = open(args.csv, 'w', newline='')
         csvwriter = csv.writer(csvfile)
