@@ -33,7 +33,7 @@ class EnumMutator extends AbstractMutator {
 
 		@Override
 		protected String valueToString(CtFieldReference<?> value) {
-			return value.getQualifiedName();
+			return value.getDeclaringType().getQualifiedName() + '.' + value.getSimpleName();
 		}
 
 		@Override
