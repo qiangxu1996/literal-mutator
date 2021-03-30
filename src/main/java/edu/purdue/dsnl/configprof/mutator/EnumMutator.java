@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Map.entry;
+
 @Log4j2
 class EnumMutator extends AbstractMutator {
 	private static final int NUM_ALT_VAL = 3;
 
-	private static final Map<String, List<String>> ANDROID_ENUM_FIELDS = Map.of();
+	private static final Map<String, List<String>> ANDROID_ENUM_FIELDS = Map.ofEntries();
 
 	private class EnumMutationIterator extends AbstractMutationIterator<CtFieldReference<?>> {
 		EnumMutationIterator(String path) throws InvalidPathException, IOException {
