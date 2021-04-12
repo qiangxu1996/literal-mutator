@@ -48,7 +48,11 @@ class EnumMutator extends AbstractMutator {
 		protected List<CtFieldReference<?>> getCandidates() {
 			var typeRef = original.getDeclaringType();
 			if (typeRef.getDeclaration() != null) {
-				return typeRef.getDeclaredFields().stream()
+				var fields = typeRef.getDeclaredFields();
+				if (fields.isEmpty()) {
+					log.warn("Class declared but no field found for {}", original);
+				}
+				return fields.stream()
 						.filter(f -> !f.equals(original)).limit(NUM_ALT_VAL).collect(Collectors.toList());
 			} else {
 				var fields = ANDROID_ENUM_FIELDS.get(typeRef.getQualifiedName());

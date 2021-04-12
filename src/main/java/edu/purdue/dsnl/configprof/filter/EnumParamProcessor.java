@@ -51,7 +51,8 @@ class EnumParamProcessor extends AbstractParamProcessor<CtFieldRead<?>> {
 	@Override
 	public void process(CtFieldRead<?> element) {
 		var variable = element.getVariable();
-		if (variable.getDeclaringType().getDeclaration() == null) {
+		var type = variable.getDeclaringType();
+		if (type == null || type.getDeclaration() == null) {
 			System.out.println(variable.getQualifiedName());
 		}
 		super.process(element);
