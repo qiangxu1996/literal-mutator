@@ -96,6 +96,10 @@ class EnumParamProcessor extends AbstractParamProcessor<CtFieldRead<?>> {
 
 	private boolean isIgnoreVarClass(CtTypedElement<?> candidate) {
 		var type = candidate.getType();
-		return type != null && "java.util.concurrent.TimeUnit".equals(type.getQualifiedName());
+		if (type != null) {
+			var name = type.getQualifiedName();
+			return "java.util.Locale".equals(name) || "java.util.concurrent.TimeUnit".equals(name);
+		}
+		return false;
 	}
 }
