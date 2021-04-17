@@ -24,11 +24,14 @@ def extract_res(f):
 
 
 def energy_time(results, errs):
+    fig = plt.gcf()
+    fig.set_figheight(fig.get_figheight() / 2)
     plt.errorbar(range(len(results)), results, errs, fmt='.',
-        elinewidth=plt.rcParams['lines.linewidth']/2)
+        elinewidth=plt.rcParams['lines.linewidth']/2, capsize=0.8, markersize=3.5)
     plt.xticks([])
     plt.ylabel('Energy (μAh)')
     plt.xlabel('Time')
+    plt.tight_layout()
 
 
 def sd_cdf(results, errs):
@@ -39,10 +42,13 @@ def sd_cdf(results, errs):
     n = len(percent)
     cdf = [i / n for i in range(1, n + 1)]
 
+    fig = plt.gcf()
+    fig.set_figheight(fig.get_figheight() / 2)
     plt.plot(percent, cdf)
     plt.ylabel('CDF')
     plt.xlabel('Normalized Stdev')
     plt.grid(True)
+    plt.tight_layout()
 
 
 def adjacent_sig(result_grps):
