@@ -1,11 +1,15 @@
 package edu.purdue.dsnl.configprof.mutator;
 
+import edu.purdue.dsnl.configprof.filter.EnumParamProcessor;
 import lombok.extern.log4j.Log4j2;
 import spoon.reflect.code.CtFieldRead;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtEnum;
+import spoon.reflect.declaration.CtField;
 import spoon.reflect.reference.CtFieldReference;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +51,18 @@ class EnumMutator extends AbstractMutator {
 		@Override
 		protected List<CtFieldReference<?>> getCandidates() {
 			var typeRef = original.getDeclaringType();
-			if (typeRef.getDeclaration() != null) {
-				var fields = typeRef.getDeclaredFields();
-				if (fields.isEmpty()) {
-					log.warn("Class declared but no field found for {}", original);
+			var type = typeRef.getTypeDeclaration();
+			if (type != null) {
+				Collection<? extends CtFieldReference<?>> fields;
+				if (type.isEnum()) {
+					fields = ((CtEnum<?>) type).getEnumValues().stream().map(CtField::getReference).toList();
+				} else {
+					fields = type.getDeclaredFields().stream()
+							.filter(f -> EnumParamProcessor.CAPITALIZED.matcher(f.getSimpleName()).matches())
+							.toList();
+					if (fields.isEmpty()) {
+						log.warn("Class declared but no field found for {}", original);
+					}
 				}
 				return fields.stream()
 						.filter(f -> !f.equals(original)).limit(NUM_ALT_VAL).collect(Collectors.toList());

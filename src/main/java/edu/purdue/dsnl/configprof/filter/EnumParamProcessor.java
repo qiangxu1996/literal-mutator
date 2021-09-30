@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-class EnumParamProcessor extends AbstractParamProcessor<CtFieldRead<?>> {
-	private static final Pattern CAPITALIZED = Pattern.compile("[A-Z][A-Z0-9_]+[A-Z0-9]");
+public class EnumParamProcessor extends AbstractParamProcessor<CtFieldRead<?>> {
+	public static final Pattern CAPITALIZED = Pattern.compile("[A-Z][A-Z0-9_]+[A-Z0-9]");
 
 	EnumParamProcessor(List<String> sources) {
 		super(sources);
