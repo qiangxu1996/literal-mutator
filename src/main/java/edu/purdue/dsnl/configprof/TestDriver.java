@@ -18,6 +18,8 @@ import java.util.List;
 class TestDriver implements Closeable {
 	private static final int REPEAT_TEST = 5;
 
+	private static final int RETRY = 2;
+
 	private static final int REF_RUN_INTERVAL = 1;
 
 	private static final boolean RUN_DUMMY = false;
@@ -88,7 +90,7 @@ class TestDriver implements Closeable {
 
 				if (idxChanged && !interleave && (idx - initCounter) % REF_RUN_INTERVAL == 0) {
 					try {
-						var results = runPairUntilStable(() -> runRefTest(idx));
+						var results = runPairUntilStable(() -> tryAgainIfFail(() -> runRefTest(idx)));
 						refResultSerializer.toJson(new RefResult(idx, results.getLeft(), results.getRight()));
 					} catch (AppAdaptor.ExecutionException e) {
 						log.fatal("Ref run failed", e);
@@ -122,18 +124,14 @@ class TestDriver implements Closeable {
 	}
 
 	private <T> T tryAgainIfFail(Executor<T> executor) throws IOException, AppAdaptor.ExecutionException {
-		boolean tryAgain = false;
-		T results = null;
-		try {
-			results = executor.exec();
-		} catch (AppAdaptor.ExecutionException e) {
-			log.info("Try again", e);
-			tryAgain = true;
+		for (int i = 0; i < RETRY - 1; i++) {
+			try {
+				return executor.exec();
+			} catch (AppAdaptor.ExecutionException e) {
+				log.info("Try again", e);
+			}
 		}
-		if (tryAgain) {
-			results = executor.exec();
-		}
-		return results;
+		return executor.exec();
 	}
 
 	private List<ResultMap> runUntilStable(Executor<List<ResultMap>> executor)
