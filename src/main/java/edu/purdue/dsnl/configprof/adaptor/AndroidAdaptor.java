@@ -20,8 +20,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class AndroidAdaptor implements AppAdaptor {
 	private static final Path OUTPUT_APK = Path.of("app-debug.apk");
 
-	private static final Path SCRIPT_PATH = Path.of("/Users/mh/files/labs/DSNL/projects/PED/impl/automation");
-
 	private static final Path FTRACE_PATH = Path.of("ftrace");
 
 	private static final Path LOGCAT_PATH = Path.of("logcat");
@@ -32,6 +30,7 @@ public class AndroidAdaptor implements AppAdaptor {
 
 	@Data
 	public static class Conf {
+		private String driverScript;
 		private String uiScript;
 		private String deviceSerial = null;
 		private int appiumPort = -1;
@@ -83,7 +82,7 @@ public class AndroidAdaptor implements AppAdaptor {
 		ExecUtil.execOutput(command);
 
 		command.clear();
-		command.add(SCRIPT_PATH.resolve("run_test.sh").toString());
+		command.add(conf.driverScript);
 		command.add("--warmup");
 		command.addAll(generalArg);
 		var output = ExecUtil.execOutput(command);
@@ -100,7 +99,7 @@ public class AndroidAdaptor implements AppAdaptor {
 		}
 
 		var command = new ArrayList<String>();
-		command.add(SCRIPT_PATH.resolve("run_test.sh").toString());
+		command.add(conf.driverScript);
 		command.add("--ftrace");
 		if (dummy) {
 			command.add("--dummy");
@@ -134,7 +133,7 @@ public class AndroidAdaptor implements AppAdaptor {
 
 	private void handleState(String tag, boolean restore) throws ExecutionException {
 		var command = new ArrayList<String>();
-		command.add(SCRIPT_PATH.resolve("run_test.sh").toString());
+		command.add(conf.driverScript);
 		if (restore) {
 			command.add("--restore-state");
 		} else {
