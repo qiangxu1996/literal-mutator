@@ -16,8 +16,6 @@ import java.util.List;
 
 @Log4j2
 class TestDriver implements Closeable {
-	private static final int REPEAT_TEST = 5;
-
 	private static final int RETRY = 2;
 
 	private static final int REF_RUN_INTERVAL = 1;
@@ -33,6 +31,10 @@ class TestDriver implements Closeable {
 	private final AppAdaptor appAdaptor;
 
 	private final int initCounter = TestState.getTestCounter();
+
+	private final int repeatTest = TestState.getRepeatTest();
+
+	private final int discardTest = TestState.getDiscardTest();
 
 	private final boolean interleave = TestState.isInterleave();
 
@@ -162,18 +164,18 @@ class TestDriver implements Closeable {
 		var results = new ArrayList<ResultMap>();
 		try {
 			if (RUN_DUMMY) {
-				for (int i = 0; i < REPEAT_TEST; i++) {
+				for (int i = 0; i < repeatTest; i++) {
 					dummyResults.add(appAdaptor.run(refApk, refSuffix(mileage, i), true));
 				}
 			}
 			appAdaptor.prepare(refApk);
-			for (int i = 0; i < REPEAT_TEST; i++) {
+			for (int i = 0; i < repeatTest; i++) {
 				results.add(appAdaptor.run(refApk, refSuffix(mileage, i)));
 			}
 		} finally {
 			appAdaptor.cleanup(refApk);
 		}
-		return Pair.of(dummyResults, results);
+		return Pair.of(dummyResults.subList(discardTest, repeatTest), results.subList(discardTest, repeatTest));
 	}
 
 	private List<ResultMap> runMutTest(String tag) throws AppAdaptor.ExecutionException {
@@ -181,21 +183,21 @@ class TestDriver implements Closeable {
 
 		try {
 			appAdaptor.prepare(tag);
-			for (int i = 0; i < REPEAT_TEST; i++) {
+			for (int i = 0; i < repeatTest; i++) {
 				results.add(appAdaptor.run(tag, String.valueOf(i)));
 			}
 		} finally {
 			appAdaptor.cleanup(tag);
 		}
 
-		return results;
+		return results.subList(discardTest, repeatTest);
 	}
 
 	private Pair<List<ResultMap>, List<ResultMap>> runInterleaveTest(int mileage, String tag)
 			throws AppAdaptor.ExecutionException {
 		var refResults = new ArrayList<ResultMap>();
 		var mutResults = new ArrayList<ResultMap>();
-		for (int i = 0; i < REPEAT_TEST; i++) {
+		for (int i = 0; i < repeatTest; i++) {
 			try {
 				if (i == 0) {
 					appAdaptor.prepare(refApk);
@@ -205,7 +207,7 @@ class TestDriver implements Closeable {
 				refResults.add(appAdaptor.run(refApk, refSuffix(mileage, i)));
 			} finally {
 				appAdaptor.cleanup(refApk);
-				if (i != REPEAT_TEST - 1) {
+				if (i != repeatTest - 1) {
 					appAdaptor.saveState(refApk);
 				}
 			}
@@ -218,12 +220,12 @@ class TestDriver implements Closeable {
 				mutResults.add(appAdaptor.run(tag, String.valueOf(i)));
 			} finally {
 				appAdaptor.cleanup(tag);
-				if (i != REPEAT_TEST - 1) {
+				if (i != repeatTest - 1) {
 					appAdaptor.saveState(tag);
 				}
 			}
 		}
-		return Pair.of(refResults, mutResults);
+		return Pair.of(refResults.subList(discardTest, repeatTest), mutResults.subList(discardTest, repeatTest));
 	}
 
 	String refSuffix(int mileage, int trial) {
