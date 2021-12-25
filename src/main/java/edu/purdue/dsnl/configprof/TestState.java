@@ -44,6 +44,7 @@ public class TestState {
 		List<String> sources;
 		LiteralType literalType;
 		boolean supplyMutation = false;
+		Path enumDefinitions;
 		int repeatTest = 5;
 		int discardTest = 0;
 		boolean interleave = false;
@@ -98,6 +99,10 @@ public class TestState {
 
 	public static LiteralType getLiteralType() {
 		return conf.literalType;
+	}
+
+	public static Path getEnumDefinitionFile() {
+		return conf.enumDefinitions;
 	}
 
 	public static int getRepeatTest() {

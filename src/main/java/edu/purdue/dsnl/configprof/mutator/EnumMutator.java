@@ -1,6 +1,11 @@
 package edu.purdue.dsnl.configprof.mutator;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+import edu.purdue.dsnl.configprof.TestState;
 import edu.purdue.dsnl.configprof.filter.EnumParamProcessor;
+import lombok.Cleanup;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import spoon.reflect.code.CtFieldRead;
 import spoon.reflect.declaration.CtElement;
@@ -9,19 +14,15 @@ import spoon.reflect.declaration.CtField;
 import spoon.reflect.reference.CtFieldReference;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Map.entry;
 
 @Log4j2
 class EnumMutator extends AbstractMutator {
 	private static final int NUM_ALT_VAL = 3;
 
-	private static final Map<String, List<String>> ANDROID_ENUM_FIELDS = Map.ofEntries();
+	private final Map<String, List<String>> frameworkEnums;
 
 	private class EnumMutationIterator extends AbstractMutationIterator<CtFieldReference<?>> {
 		EnumMutationIterator(String path) throws InvalidPathException, IOException {
@@ -67,7 +68,7 @@ class EnumMutator extends AbstractMutator {
 				return fields.stream()
 						.filter(f -> !f.equals(original)).limit(NUM_ALT_VAL).collect(Collectors.toList());
 			} else {
-				var fields = ANDROID_ENUM_FIELDS.get(typeRef.getQualifiedName());
+				var fields = frameworkEnums.get(typeRef.getQualifiedName());
 				if (fields != null) {
 					return fields.stream().filter(f -> !f.equals(original.getSimpleName()))
 							.limit(NUM_ALT_VAL).map(this::getRef).collect(Collectors.toList());
@@ -85,8 +86,16 @@ class EnumMutator extends AbstractMutator {
 		}
 	}
 
-	public EnumMutator(List<String> sources) {
+	@SneakyThrows(CsvException.class)
+	public EnumMutator(List<String> sources) throws IOException {
 		super(sources);
+		if (TestState.getEnumDefinitionFile() != null) {
+			@Cleanup var reader = new CSVReader(Files.newBufferedReader(TestState.getEnumDefinitionFile()));
+			frameworkEnums = reader.readAll().stream().collect(
+					Collectors.toMap(p -> p[0], p -> Arrays.asList(p[1].split(" "))));
+		} else {
+			frameworkEnums = Map.of();
+		}
 	}
 
 	@Override
