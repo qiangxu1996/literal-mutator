@@ -21,7 +21,7 @@ public class BuildWorker extends BuilderGrpc.BuilderImplBase {
 
 	private final AppAdaptor appAdaptor;
 
-	public BuildWorker(String project, List<String> sources, AppAdaptor appAdaptor) {
+	public BuildWorker(String project, List<String> sources, AppAdaptor appAdaptor) throws IOException {
 		this.project = Path.of(project);
 		mutator = MutatorFactory.createMutator(TestState.getLiteralType(), sources);
 		this.appAdaptor = appAdaptor;
