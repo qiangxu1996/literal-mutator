@@ -77,14 +77,15 @@ def ref_mut_plot(ref_result_list, mut_result_list):
     ref_errs = [statistics.stdev(r) for r in ref_result_list]
     mut_errs = [statistics.stdev(r) for r in mut_result_list]
 
+    plt.gcf().set_figheight(2.4)
     style = {'linestyle': '', 'marker': 'o', 'markersize': 3,
         'elinewidth': 1, 'capsize': 1.5}
     plt.errorbar(x, ref_results, ref_errs, label='Unmodified', **style)
     plt.errorbar(x, mut_results, mut_errs, label='Modified', **style)
     plt.xticks([])
-    plt.xlabel('Parameters')
-    plt.ylabel('Energy (µAh)')
-    plt.legend()
+    plt.xlabel('Parameters', size=12)
+    plt.ylabel('Energy (µAh)', size=12)
+    plt.legend(fontsize=12)
 
 
 def sig_params(mut_data, param_indices,

@@ -31,7 +31,7 @@ def energy_time(results, errs):
     plt.xticks([])
     plt.ylabel('Energy (μAh)')
     plt.xlabel('Time')
-    plt.tight_layout()
+    plt.tight_layout(pad=.1)
 
 
 def sd_cdf(results, errs):
@@ -47,8 +47,7 @@ def sd_cdf(results, errs):
     plt.plot(percent, cdf)
     plt.ylabel('CDF')
     plt.xlabel('Normalized Stdev')
-    plt.grid(True)
-    plt.tight_layout()
+    plt.tight_layout(pad=.1)
 
 
 def adjacent_sig(result_grps):
@@ -88,6 +87,7 @@ if __name__ == '__main__':
     result_grps, results, errs = extract_res(sys.argv[1])
 
     print('min:', min(results), 'max:', max(results))
+    plt.rc('font', size=14)
 
     plt.figure()
     energy_time(results, errs)
