@@ -1,5 +1,7 @@
 # Literal Mutator
 
+[![arXiv](https://img.shields.io/badge/arXiv-2009.12156-b31b1b)](https://arxiv.org/abs/2009.12156)
+
 This repository contains code for the paper "An Empirical Study on the Impact of Deep Parameters on Mobile App Energy Usage" (SANER 2022), presenting the deep paramter mutation and testing framework.
 
 ## Setup
@@ -65,3 +67,16 @@ After configuring `test-conf.yml` and `build.sh`, run the tests from within `<te
 ```
 
 `ref-results.json` and `mut-results.json` give the measurement results for the original and mutated paramters, respectively. `process_ref.py` and `process_mut.py` can further process and visualize the results. Refer to the source code for details.
+
+## Citation
+
+Please cite this paper if it helps your research:
+
+```
+@INPROCEEDINGS{xu2022param,
+  author={Xu, Qiang and Davis, James C. and Hu, Y. Charlie and Jindal, Abhilash},
+  booktitle={2022 IEEE International Conference on Software Analysis, Evolution and Reengineering (SANER)},
+  title={An Empirical Study on the Impact of Deep Parameters on Mobile App Energy Usage},
+  year={2022}
+}
+```
