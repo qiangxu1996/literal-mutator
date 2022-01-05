@@ -1,8 +1,9 @@
 # Literal Mutator
 
 [![arXiv](https://img.shields.io/badge/arXiv-2009.12156-b31b1b)](https://arxiv.org/abs/2009.12156)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5823364.svg)](https://doi.org/10.5281/zenodo.5823364)
 
-This repository contains code for the paper "An Empirical Study on the Impact of Deep Parameters on Mobile App Energy Usage" (SANER 2022), presenting the deep paramter mutation and testing framework.
+This repository contains code for the paper "An Empirical Study on the Impact of Deep Parameters on Mobile App Energy Usage" (SANER 2022), presenting the deep parameter mutation and testing framework.
 
 ## Dependency
 
