@@ -4,6 +4,12 @@
 
 This repository contains code for the paper "An Empirical Study on the Impact of Deep Parameters on Mobile App Energy Usage" (SANER 2022), presenting the deep paramter mutation and testing framework.
 
+## Dependency
+
+- JDK (tested against OpenJDK 16)
+- [android-appium-profiler](https://github.com/qiangxu1996/android-appium-profiler)
+- (Optional) Visual Studio Code with [Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.Bookmarks) extension
+
 ## Setup
 
 ```bash
@@ -18,7 +24,7 @@ git clone https://github.com/qiangxu1996/android-appium-profiler.git
 
 ## Extracting deep parameters from an app
 
-Assume the app source code tree is placed at `<app dir>`. It Java source code is usually placed at `<app dir>/<module name>/src/main/java` in a per-module basis.
+Assume the app source code tree is placed at `<app dir>`. Its Java source code is usually placed at `<app dir>/<module name>/src/main/java` in a per-module basis.
 
 ```bash
 mkdir <test dir> && cd <test dir>
@@ -57,6 +63,8 @@ android:
   uiScript: the app test script to use from android_appium_profiler/apps, without .py
   stableThreshold: redo the tests for a specific parameter if the normalized standard deviation of the results is higher than the threshold
 ```
+
+In android-appium-profiler, we provide UI scripts for all apps that we use in the paper, and they should work well with the app versions specified in Table III of the paper.
 
 Then create a script – `build.sh` – in `<app dir>` to build the app. Make sure the script is executable, and the resulting APK file is at `<app dir>/app-debug.apk`.
 
